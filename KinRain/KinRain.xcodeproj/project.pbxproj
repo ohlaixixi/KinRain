@@ -607,10 +607,10 @@
 		16F27D7F1FCE8D69008BC2D6 /* Moudel */ = {
 			isa = PBXGroup;
 			children = (
+				16F27D931FCE8D69008BC2D6 /* Main */,
 				16F27D801FCE8D69008BC2D6 /* Category */,
 				16F27D871FCE8D69008BC2D6 /* Community */,
 				16F27D8D1FCE8D69008BC2D6 /* Home */,
-				16F27D931FCE8D69008BC2D6 /* Main */,
 				16F27D9F1FCE8D69008BC2D6 /* My */,
 				16F27DA51FCE8D69008BC2D6 /* Products */,
 				16F27DB31FCE8D69008BC2D6 /* Public */,
@@ -1378,6 +1378,7 @@
 				16F27CC41FCE86C3008BC2D6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		16F27CC51FCE86C3008BC2D6 /* Build configuration list for PBXNativeTarget "KinRainTests" */ = {
 			isa = XCConfigurationList;
@@ -1386,6 +1387,7 @@
 				16F27CC71FCE86C3008BC2D6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		16F27CC81FCE86C3008BC2D6 /* Build configuration list for PBXNativeTarget "KinRainUITests" */ = {
 			isa = XCConfigurationList;
@@ -1394,6 +1396,7 @@
 				16F27CCA1FCE86C3008BC2D6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

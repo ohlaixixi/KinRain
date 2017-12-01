@@ -8,10 +8,19 @@
 
 #import <UIKit/UIKit.h>
 
-@interface LXGoodsAttributeCell : UICollectionViewCell
+@protocol LXGoodsAttributeCellDelegate <NSObject>
 
-@property (nonatomic, copy) NSString *attrText;
+- (void)heightForAttributeCell:(CGFloat)cellHeight whiteRow:(NSInteger)index;
 
-- (CGSize)sizeForCell;
+@end
+
+@interface LXGoodsAttributeCell : UITableViewCell
+
+// 规格数组
+@property (nonatomic, strong) NSDictionary *attrs;
+
+@property (nonatomic, weak) id<LXGoodsAttributeCellDelegate> delegate;
+
+- (CGFloat)heightForCell;
 
 @end

@@ -50,11 +50,11 @@
 - (void)test {
     [self presentSemiView:self.selectAttributesView withOptions:@{
                                              KNSemiModalOptionKeys.parentAlpha : @0.8,
-//                                             KNSemiModalOptionKeys.parentScale : @0.9,
                                              KNSemiModalOptionKeys.backgroundView : [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"background_01"]]
                                              }];
     NSArray *arrtArray = @[
                            @{@"title":@"颜色",@"attr":@[@"红色",@"蓝色",@"白色",@"黑色",@"一一色",@"一二色",@"三五色"]},
+                           @{@"title":@"大小",@"attr":@[@"大",@"中",@"小"]},
                            @{@"title":@"尺寸",@"attr":@[@"1000",@"2000",@"2",@"60",@"1321213",@"1212",@"test"]},
                            ];
     self.selectAttributesView.attrArray = arrtArray;

@@ -9,20 +9,19 @@
 #import "LXGoodsSelectAttributesView.h"
 #import "LXGoodsAttributeCell.h"
 
-@interface LXGoodsSelectAttributesView () <UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout>
+@interface LXGoodsSelectAttributesView () <UITableViewDelegate,UITableViewDataSource,LXGoodsAttributeCellDelegate>
 
 @property (nonatomic, strong) UIImageView *goodsImageView;
 
 @property (nonatomic, strong) UILabel *priceLabel;
 
-@property (nonatomic, strong) UICollectionView *attrSelectCollectionView;
+@property (nonatomic, strong) UITableView *attrSelectTableView;
 
-@property (nonatomic, strong) LXGoodsAttributeCell *goodsAttrCell;
+@property (nonatomic, strong) LXGoodsAttributeCell *goodsAttributeCell;
 
 @property (nonatomic, strong) UIButton *shoppingCartBtn;
 
 @property (nonatomic, strong) UIButton *buyBtn;
-
 
 @end
 
@@ -47,7 +46,7 @@ static NSString *GoodsAttributeCell = @"GoodsAttributeCell";
     [self addSubview:contentView];
     [contentView addSubview:self.goodsImageView];
     [contentView addSubview:self.priceLabel];
-    [contentView addSubview:self.attrSelectCollectionView];
+    [contentView addSubview:self.attrSelectTableView];
     [contentView addSubview:bottomView];
     [bottomView addSubview:self.shoppingCartBtn];
     [bottomView addSubview:self.buyBtn];
@@ -62,11 +61,11 @@ static NSString *GoodsAttributeCell = @"GoodsAttributeCell";
         make.left.equalTo(_goodsImageView.mas_right).offset(10);
     }];
     
-    [_attrSelectCollectionView mas_makeConstraints:^(MASConstraintMaker *make) {
+    [_attrSelectTableView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(_goodsImageView.mas_bottom).offset(20);
         make.left.equalTo(contentView).offset(10);
         make.trailing.equalTo(contentView).offset(-10);
-        make.bottom.equalTo(bottomView.mas_top).offset(10);
+        make.bottom.equalTo(bottomView.mas_top);
     }];
     
     [bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -80,55 +79,36 @@ static NSString *GoodsAttributeCell = @"GoodsAttributeCell";
     }];
     [_buyBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.right.bottom.equalTo(bottomView);
-        make.width.equalTo(_shoppingCartBtn);
+        make.width.height.equalTo(_shoppingCartBtn);
     }];
 }
 
 #pragma mark - Delegate
 
-- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-    return _attrArray.count;
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return self.attrArray.count;
 }
 
-- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    NSArray *attrs = _attrArray[section][@"attr"];
-    return attrs.count;
-}
-
-- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    LXGoodsAttributeCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:GoodsAttributeCell forIndexPath:indexPath];
-    NSDictionary *sectionData = _attrArray[indexPath.section];
-    cell.attrText = sectionData[@"attr"][indexPath.row];
-    MLog(@"attrText=%@",sectionData[@"attr"][indexPath.row]);
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    LXGoodsAttributeCell *cell = [tableView dequeueReusableCellWithIdentifier:GoodsAttributeCell forIndexPath:indexPath];
+    NSDictionary *rowData = _attrArray[indexPath.row];
+    cell.delegate = self;
+    cell.attrs = rowData;
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }
 
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
-    return CGSizeMake(0, 10);
-}
-
-- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
-    return 10;
-}
-
-- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
-    return 10;
-}
-
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    if (_goodsAttrCell == nil) {
-        _goodsAttrCell = [[LXGoodsAttributeCell alloc] init];
-    }
-    NSDictionary *sectionData = _attrArray[indexPath.section];
-    _goodsAttrCell.attrText = sectionData[@"attr"][indexPath.row];
-    return [_goodsAttrCell sizeForCell];
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSDictionary *rowData = _attrArray[indexPath.row];
+    self.goodsAttributeCell.attrs = rowData;
+    return [self.goodsAttributeCell heightForCell];
 }
 
 #pragma mark - Action
 
 - (void)setAttrArray:(NSArray *)attrArray {
     _attrArray = attrArray;
-    [self.attrSelectCollectionView reloadData];
+    [self.attrSelectTableView reloadData];
 }
 
 - (void)shoppingCartBtnClick {
@@ -156,31 +136,23 @@ static NSString *GoodsAttributeCell = @"GoodsAttributeCell";
     return _priceLabel;
 }
 
-- (UICollectionView *)attrSelectCollectionView {
-    if (!_attrSelectCollectionView) {
-//        UICollectionViewFlowLayout * layout = [[UICollectionViewFlowLayout alloc]init];
-//        UICollectionView * collectionView = [[UICollectionView alloc]initWithFrame:self.imageBackgroudView.frame collectionViewLayout:layout];
-//        [collectionView registerNib:[UINib nibWithNibName:@"QBBookImageCell" bundle:nil] forCellWithReuseIdentifier:bookImageCell];
-//        layout.itemSize = CGSizeMake(self.width, 380);
-//        layout.minimumLineSpacing = 0;
-//        layout.minimumInteritemSpacing = 0;
-//        layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-//        collectionView.backgroundColor = RGB(217, 217, 217);
-//        collectionView.delegate = self;
-//        collectionView.dataSource = self;
-//        collectionView.showsHorizontalScrollIndicator = NO;
-//        collectionView.pagingEnabled = YES;
-        UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
-//        layout.minimumLineSpacing = 5;
-//        layout.minimumInteritemSpacing = 5;
-        _attrSelectCollectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
-        _attrSelectCollectionView.delegate = self;
-        _attrSelectCollectionView.dataSource = self;
-        _attrSelectCollectionView.backgroundColor = [UIColor whiteColor];
-        [_attrSelectCollectionView registerClass:[LXGoodsAttributeCell class] forCellWithReuseIdentifier:GoodsAttributeCell];
-        
+- (UITableView *)attrSelectTableView {
+    if (!_attrSelectTableView) {
+        _attrSelectTableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+        _attrSelectTableView.delegate = self;
+        _attrSelectTableView.dataSource = self;
+        _attrSelectTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+        _attrSelectTableView.showsVerticalScrollIndicator = NO;
+        [_attrSelectTableView registerClass:[LXGoodsAttributeCell class] forCellReuseIdentifier:GoodsAttributeCell];
     }
-    return _attrSelectCollectionView;
+    return _attrSelectTableView;
+}
+
+- (LXGoodsAttributeCell *)goodsAttributeCell {
+    if (!_goodsAttributeCell) {
+        _goodsAttributeCell = [[LXGoodsAttributeCell alloc] init];
+    }
+    return _goodsAttributeCell;
 }
 
 - (UIButton *)shoppingCartBtn {
@@ -194,6 +166,7 @@ static NSString *GoodsAttributeCell = @"GoodsAttributeCell";
 - (UIButton *)buyBtn {
     if (!_buyBtn) {
         _buyBtn = [UIButton buttonWithTitle:@"立即购买" withFontSize:16 withTitleColor:[UIColor redColor] withTarget:self withAction:@selector(buyBtnClick)];
+        _buyBtn.backgroundColor = [UIColor grayColor];
     }
     return _buyBtn;
 }

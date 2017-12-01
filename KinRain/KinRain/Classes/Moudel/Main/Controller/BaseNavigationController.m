@@ -24,11 +24,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.interactivePopGestureRecognizer.enabled = NO;
+//    self.interactivePopGestureRecognizer.enabled = NO;
 }
 
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated{
-    if (self.childViewControllers.count>0) {
+    if (self.childViewControllers.count > 0) {
         UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
         [btn setImage:[UIImage imageNamed:@"back"] forState:UIControlStateNormal];
         btn.size = btn.currentImage.size;
